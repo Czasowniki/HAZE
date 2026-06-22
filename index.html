@@ -100,8 +100,9 @@
         camera-controls disable-pan
         shadow-intensity="1" shadow-softness="1"
         exposure="1.6" environment-intensity="1.8"
+        autoplay
         interaction-prompt="none"
-        camera-orbit="90deg 75deg 120%" 
+        camera-orbit="270deg 75deg 120%" 
         camera-target="0m 0.15m 0m"
         min-camera-orbit="auto auto 40%" 
         max-camera-orbit="auto auto 600%"
@@ -112,9 +113,10 @@
         const getEl = (id) => document.getElementById(id);
         const mv = getEl('clock-model');
 
+        // Wartości 270deg ustawiają widok frontowy
         const CONFIG = {
-            mobileOrbit: "90deg 75deg 110%",
-            desktopOrbit: "90deg 75deg 120%",
+            mobileOrbit: "270deg 75deg 110%",
+            desktopOrbit: "270deg 75deg 120%",
             mobileTarget: "0m 0.20m 0m",
             desktopTarget: "0m 0.15m 0m"
         };
@@ -139,42 +141,15 @@
             mv.exposure = isDark ? "1.6" : "2.8";
         };
 
-        // --- OBSŁUGA ODWRÓCONEJ ANIMACJI ---
-        let lastTime = performance.now();
-        let isPlaying = true;
-
-        const reverseAnimation = (now) => {
-            if (isPlaying && mv.duration > 0) {
-                const deltaTime = (now - lastTime) / 1000;
-                // Odejmujemy czas, aby animacja szła wstecz
-                let newTime = mv.currentTime - deltaTime; 
-                
-                if (newTime < 0) {
-                    newTime = mv.duration; // Pętla: jeśli dojdzie do początku, skacze na koniec
-                }
-                mv.currentTime = newTime;
-            }
-            lastTime = now;
-            requestAnimationFrame(reverseAnimation);
-        };
-
-        // Czekamy na załadowanie modelu, aby poznać jego czas trwania (duration)
-        mv.addEventListener('load', () => {
-            mv.currentTime = mv.duration; // Startujemy od końca animacji
-            lastTime = performance.now();
-            requestAnimationFrame(reverseAnimation);
-        });
-
         const pauseBtn = getEl('pause-toggle');
         pauseBtn.onclick = () => {
-            if (isPlaying) {
-                isPlaying = false;
+            if (pauseBtn.dataset.paused !== "true") {
+                mv.pause();
                 getEl('icon-pause').style.display = 'none';
                 getEl('icon-play').style.display = 'block';
                 pauseBtn.dataset.paused = "true";
             } else {
-                isPlaying = true;
-                lastTime = performance.now(); // Reset czasu po pauzie, żeby uniknąć przeskoku
+                mv.play();
                 getEl('icon-pause').style.display = 'block';
                 getEl('icon-play').style.display = 'none';
                 pauseBtn.dataset.paused = "false";
