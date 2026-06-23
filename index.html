@@ -103,23 +103,22 @@
         autoplay
         interaction-prompt="none"
         camera-orbit="180deg 75deg 120%" 
-        camera-target="0m 0.15m 0m"
+        camera-target="0m 0.08m 0m"
         min-camera-orbit="auto auto 40%" 
         max-camera-orbit="auto auto 600%"
         loading="eager">
     </model-viewer>
 
     <script>
-        const getEl = (id) => document.getElementById(id);
-        const mv = getEl('clock-model');
-
-        // Wartości 270deg ustawiają widok frontowy
         const CONFIG = {
             mobileOrbit: "270deg 75deg 110%",
             desktopOrbit: "270deg 75deg 120%",
-            mobileTarget: "0m 0.20m 0m",
-            desktopTarget: "0m 0.15m 0m"
+            mobileTarget: "0m 0.12m 0m",
+            desktopTarget: "0m 0.08m 0m"
         };
+
+        const getEl = (id) => document.getElementById(id);
+        const mv = getEl('clock-model');
 
         getEl('reset-view').onclick = () => {
             const isMob = window.innerWidth < 768;
